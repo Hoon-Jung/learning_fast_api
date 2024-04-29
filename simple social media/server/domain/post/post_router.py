@@ -13,5 +13,3 @@ def post_list(db: Session = Depends(get_db)):
     return posts
 
 # @router.get("/1")
-
-    return posts

@@ -11,4 +11,3 @@ class Post(Base):
     content = Column(Text, nullable=False)
     created_at = Column(DateTime, nullable=False)
 
-

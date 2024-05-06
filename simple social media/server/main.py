@@ -23,4 +23,5 @@ app.add_middleware(
 #     return {"message": "Welcome"}
 
 #api/post/list/...
+print("main.py is working")
 app.include_router(post_router.router)

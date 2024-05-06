@@ -1,15 +1,19 @@
 from fastapi import APIRouter, Depends
-from models import Post
 from sqlalchemy.orm import Session
 from database import get_db
+from domain.post import post_CRUD, post_schema
 
 router = APIRouter(
     prefix = "/api/post"
 )
 
-@router.get("/list")
+@router.get("/list", response_model=list[post_schema.Post])
 def post_list(db: Session = Depends(get_db)):
-    posts = db.query(Post).all()
+    print("router is working")
+    posts = post_CRUD.get_all_posts(db)
     return posts
 
-# @router.get("/1")
+@router.get("/detail/{post_id}")
+def get_post(post_id: int, db: Session = Depends(get_db)):
+    post = post_CRUD.get_specific_post(db, post_id)
+    return post

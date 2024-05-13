@@ -30,11 +30,7 @@ export default{
   <h1> {{ this.post.subject }}</h1>
   <div> {{ this.post.content }}</div>
   <ul>
-<<<<<<< HEAD
-    <li v-for="comment in post.comments" :key="comment.id">
-=======
     <li v-for="comment in post.replies" :key="comment.id">
->>>>>>> d2012c2 (Debugged everything (only UI is left))
       {{ comment.content }}
     </li>
   </ul>

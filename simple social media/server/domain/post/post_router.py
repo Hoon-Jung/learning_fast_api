@@ -9,11 +9,11 @@ router = APIRouter(
 
 @router.get("/list", response_model=list[post_schema.Post])
 def post_list(db: Session = Depends(get_db)):
-    print("router is working")
     posts = post_CRUD.get_all_posts(db)
     return posts
 
-@router.get("/detail/{post_id}")
+@router.get("/detail/{post_id}", response_model=post_schema.Post)
 def get_post(post_id: int, db: Session = Depends(get_db)):
     post = post_CRUD.get_specific_post(db, post_id)
+    print(post)
     return post

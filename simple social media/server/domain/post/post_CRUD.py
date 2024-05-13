@@ -6,5 +6,4 @@ def get_all_posts(db: Session):
     return db.query(Post).order_by(Post.created_at.desc()).all()
 
 def get_specific_post(db: Session, id):
-    print("in get specific post")
     return db.query(Post).get(id)

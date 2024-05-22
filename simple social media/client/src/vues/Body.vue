@@ -8,7 +8,8 @@ export default{
   },
   data() {
     return{
-      post: {}
+      post: {},
+      content: ""
     }
   },
   created() {
@@ -21,6 +22,22 @@ export default{
             this.post = json;
             });
         });
+    },
+    addReply(event){
+      event.preventDefault();
+
+      let options={
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: this.content })
+      }
+
+      fetch(`http://localhost:8000/api/reply/add/${this.post_id}`, options).then((response) => {
+        console.log(response);
+        this.getPost();
+      }).catch((error) => {
+        console.log("Error:", error);
+      })
     }
   },
 };
@@ -34,4 +51,8 @@ export default{
       {{ comment.content }}
     </li>
   </ul>
+  <form @submit.prevent="addReply">
+    <textarea rows="15" v-model="content"></textarea>
+    <input type="submit" value="Add Comment" />
+  </form>
 </template>

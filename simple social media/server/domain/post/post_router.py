@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
 from domain.post import post_CRUD, post_schema
@@ -17,3 +17,7 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
     post = post_CRUD.get_specific_post(db, post_id)
     print(post)
     return post
+
+@router.post("/add")
+def make_post(post: post_schema.MakePost, db: Session = Depends(get_db)):
+    post_CRUD.create_post(db, make_post=post)

@@ -1,6 +1,6 @@
 const fastapi = (operation, url, params, success_callback, failure_callback) => {
     let method = operation;
-    let _url = "http://localhost:8000" + url;
+    let _url = import.meta.env.VITE_APP_SERVER_URL_ + url;
 
     let options = {
             method: method,
@@ -18,6 +18,12 @@ const fastapi = (operation, url, params, success_callback, failure_callback) => 
     }
     
     fetch(_url, options).then((response) => {
+      if(response.status === 204){
+        if (success_callback){
+          success_callback();
+        }
+        return;
+      }
         response
           .json()
           .then((json) => {

@@ -25,6 +25,9 @@
 
 <template>
   <div class="container my-3">
+    <div class="mt-4">
+      <router-link to="/" class="btn btn-secondary"> < Back </router-link>
+    </div>
     <h2 class="border-bottom py-2">{{ post.subject }}</h2>
     <div class="card my-3">
       <div class="card-body">
@@ -33,13 +36,13 @@
         </div>
         <div class="d-flex justify-content-end">
           <div class="badge bg-light text-dark p-2">
-            {{ post.created_at }}
+            {{ formatDate(post.created_at) }}
           </div>
         </div>
       </div>
     </div>
         <h5 class="border-bottom my-3 py-2">
-          {{ post.replies.length }} replies
+          {{ post.replies?.length }} replies
         </h5>
         <div class="card my-3" v-for="reply in post.replies" :key="reply.id">
           <div class="card-body">
@@ -48,7 +51,7 @@
             </div>
             <div class="d-flex justify-content-end">
               <div class="badge bg-light text-dark p-2">
-                {{ reply.created_at }}
+                {{ formatDate(reply.created_at) }}
               </div>
             </div>
           </div>
@@ -66,6 +69,7 @@
 
 
 <script>
+import moment from "moment";
 import fastapi from '../../lib/api';
 import error_component from "../components/error_component.vue";
 export default{
@@ -89,6 +93,9 @@ export default{
     this.getPost()
   },
   methods: {
+    formatDate(dt){
+      return moment(dt).startOf("hour").fromNow();
+    },
     getPost(){
       fastapi("get", `/api/post/detail/${this.post_id}`, {}, (json) => {
         this.post = json;

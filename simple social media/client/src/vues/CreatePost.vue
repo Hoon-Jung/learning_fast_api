@@ -1,10 +1,10 @@
 <template>
     <div class="container my-3">
-      <h4>질문 등록</h4>
+      <h4>Create a Post</h4>
       <ErrorComponent :error="error" />
-      <form @submit.prevent="postQuestion">
+      <form @submit.prevent="createPost">
         <div class="mb-3">
-          <label for="subject" class="form-label">제목</label>
+          <label for="subject" class="form-label">Title</label>
           <input
             type="text"
             class="form-control"
@@ -14,7 +14,7 @@
           />
         </div>
         <div class="mb-3">
-          <label for="content" class="form-label">내용</label>
+          <label for="content" class="form-label">Content</label>
           <textarea
             class="form-control"
             id="content"
@@ -23,7 +23,7 @@
             required
           ></textarea>
         </div>
-        <button type="submit" class="btn btn-primary">저장하기</button>
+        <button type="submit" class="btn btn-primary">Create Post</button>
       </form>
     </div>
   </template>
@@ -52,13 +52,12 @@ export default{
   methods: {
     createPost(){
       let params={
+        subject: this.subject,
         content: this.content,
       }
 
-      fastapi("post", `/api/reply/add/${this.post_id}`, params, () => {
-        this.content = "";
-        this.getPost();
-        this.error = { detail:[] };
+      fastapi("post", `/api/post/add`, params, () => {
+        this.$router.push("/");
       },
       (err) => {
         this.error = err; 

@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/vues/Home.vue";
 import Body from "@/vues/Body.vue";
 import CreatePost from "@/vues/CreatePost.vue";
+import UserCreate from "@/vues/UserCreate.vue"
 
 const routes = [
   {
@@ -17,9 +18,15 @@ const routes = [
     props: true,
   },
   {
-    path: "/create_post",
+    path: "/post-add",
     name: "CreatePost",
     component: CreatePost,
+    props: true,
+  },
+  {
+    path: "/user-create",
+    name: "UserCreate",
+    component: UserCreate,
     props: true,
   },
 ];

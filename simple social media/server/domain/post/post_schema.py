@@ -19,3 +19,8 @@ class MakePost(BaseModel):
         if not v:
             raise ValueError("Missing a subject/content")
         return v
+    
+
+class PostList(BaseModel):
+    total: int=0
+    posts: list[Post]

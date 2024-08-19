@@ -15,14 +15,22 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <router-link to="/user-create" class="nav-link"
-                >Sign up</router-link
-              >
+            <li class="nav-item" v-if="is_login">
+              <a 
+              class="nav-link" 
+              href="/user-login"
+                @click="
+                  $store.commit('setAccessToken', '');
+                  $store.commit('setUsername', '');
+                  $store.commit('setIsLogin', false);
+                ">Logout {{ get_username }}
+              </a>
             </li>
-            <!-- <li class="nav-item">
-              <router-link to="/user-login" class="nav-link">로그인</router-link>
-            </li> -->
+            <li class="nav-item" v-if="!is_login">
+              <router-link to="/user-create" class="nav-link"
+                >Sign up</router-link>
+              <router-link to="/user-login" class="nav-link">Login</router-link>
+            </li>
           </ul>
         </div>
       </div>
@@ -31,6 +39,14 @@
 
 <script>
 export default {
+  computed: {
+    is_login(){
+      return this.$store.state.is_login;
+    },
+    get_username(){
+      return this.$store.state.username;
+    }
+  },
   methods: {
     setPage(page) {
       this.$store.dispatch('setPage', page);

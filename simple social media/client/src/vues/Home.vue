@@ -4,6 +4,7 @@
       <thead>
         <tr class="table-dark">
           <th>Post Number</th>
+          <th>User</th>
           <th>Title</th>
           <th>Replies</th>
           <th>Posted at</th>
@@ -12,6 +13,8 @@
       <tbody>
         <tr v-for="(post, i) in allposts" :key="post.id">
           <td>{{ total - (page * this.p_size) - i }}</td>
+          <td v-if="post.user">@{{ post.user.username }}</td>
+          <td v-else>N/A</td>
           <td>
             <router-link :to="'/body/' + post.id">{{
               post.subject
@@ -53,11 +56,13 @@
         <button class="page-link" @click="getPosts(totalPage-1)">Last</button>
       </li>
     </ul>
-
-    <div class="d-flex justify-content-start">
+    
+    <div class="d-flex justify-content-start" v-if="is_logged_in">
       <router-link to="/post-add" class="btn btn-primary"
-        >Post</router-link
-      >
+        >Post</router-link>
+    </div>
+    <div class="d-flex justify-content-start" v-else>
+      <div class="btn btn-primary">Log in to Post</div>
     </div>
   </div>
 </template>
@@ -90,7 +95,10 @@ export default{
     },
     totalPage() {
       return Math.ceil(this.total / this.p_size)
-    }
+    },
+    is_logged_in(){
+      return this.$store.state.is_login;
+    },
   },
   created() {
     this.getPosts(this.$store.state.page);
@@ -112,4 +120,6 @@ export default{
     },
   },
 };
+
+
 </script>

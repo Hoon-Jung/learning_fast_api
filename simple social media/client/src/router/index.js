@@ -3,7 +3,10 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/vues/Home.vue";
 import Body from "@/vues/Body.vue";
 import CreatePost from "@/vues/CreatePost.vue";
-import UserCreate from "@/vues/UserCreate.vue"
+import UserCreate from "@/vues/UserCreate.vue";
+import UserLogin from "@/vues/UserLogin.vue";
+import PostChange from "@/vues/PostChange.vue";
+import ReplyChange from "@/vues/ReplyChange.vue";
 
 const routes = [
   {
@@ -27,6 +30,22 @@ const routes = [
     path: "/user-create",
     name: "UserCreate",
     component: UserCreate,
+  },
+  {
+    path: "/user-login",
+    name: "UserLogin",
+    component: UserLogin,
+  },
+  {
+    path: "/update_post/:post_id",
+    name: "PostUpdate",
+    component: PostChange,
+    props: true,
+  },
+  {
+    path: "/update_reply/:reply_id",
+    name: "ReplyUpdate",
+    component: ReplyChange,
     props: true,
   },
 ];

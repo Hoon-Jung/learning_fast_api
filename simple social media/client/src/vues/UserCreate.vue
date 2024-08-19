@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h5 class="my-3 border-bottom pb-2">Sign up</h5>
-    <ErrorComponent :error="error" />
+    <error_component :error="error" />
     <form @submit.prevent="createUser">
       <div class="mb-3">
         <label for="username">Username</label>
@@ -41,12 +41,12 @@
 
 
 <script>
+import error_component from '@/components/error_component.vue';
 import fastapi from '../../lib/api';
-import ErrorComponent from "@/components/error_component.vue";
 
 export default {
   components: {
-    ErrorComponent,
+    error_component,
   },
   data() {
     return {
@@ -66,7 +66,7 @@ export default {
         password2: this.password2,
       };
       fastapi("post", `/api/user/create`, params, () => {
-        this.$router.push("/");
+        this.$router.push("/user-login");
       },
       (err) => {
         this.error = err; 

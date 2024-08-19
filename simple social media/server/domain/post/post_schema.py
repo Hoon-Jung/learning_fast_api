@@ -1,6 +1,7 @@
 from pydantic import BaseModel, field_validator
 import datetime
 from domain.replies.replies_schema import GetReply
+from domain.user.user_schema import UserShow
 
 class Post(BaseModel):
     id: int
@@ -8,6 +9,9 @@ class Post(BaseModel):
     content: str
     replies: list[GetReply]
     created_at: datetime.datetime
+    modified_at: datetime.datetime | None = None
+    user: UserShow | None
+    voter: list[UserShow] = []
 
 
 class MakePost(BaseModel):
@@ -24,3 +28,12 @@ class MakePost(BaseModel):
 class PostList(BaseModel):
     total: int=0
     posts: list[Post]
+
+class PostUpdate(MakePost):
+    post_id: int
+
+class PostDelete(BaseModel):
+    post_id: int
+
+class PostLike(BaseModel):
+    post_id: int

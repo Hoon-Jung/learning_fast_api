@@ -36,9 +36,21 @@
         </div>
         <div class="d-flex justify-content-end">
           <div class="badge bg-light text-dark p-2">
-            {{ formatDate(post.created_at) }}
+            @{{ post.user?.username }} | {{ formatDate(post.created_at) }}
           </div>
         </div>
+
+        <div class="my-3">
+          <button class="btn btn-sm btn-outline-secondary" @click="likePost(post.id)">Likes 
+            <span class="badge rounded-pill bg-success">{{ post.voter.length }}</span>
+          </button>
+        </div>
+
+        <div class="my-3" v-if="post.user && $store.state.username === post.user.username">
+        <router-link :to=" '/update_post/' + post.id " class="btn btn-sm btn-outline-secondary">Edit</router-link>
+        <button class="btn btn-sm btn-outline-danger" @click="deletePost(post.id)">Delete</button>
+        </div>
+
       </div>
     </div>
         <h5 class="border-bottom my-3 py-2">
@@ -51,18 +63,30 @@
             </div>
             <div class="d-flex justify-content-end">
               <div class="badge bg-light text-dark p-2">
-                {{ formatDate(reply.created_at) }}
+                @{{ reply.user.username }} | {{ formatDate(reply.created_at) }}
               </div>
             </div>
+
+            <div class="my-3">
+              <button class="btn btn-sm btn-outline-secondary" @click="likeReply(reply.id)">Likes 
+                <span class="badge rounded-pill bg-success">{{ reply.voter.length }}</span>
+              </button>
+            </div>
+
+            <div class="my-3" v-if="reply.user && $store.state.username === reply.user.username">
+            <router-link :to=" '/update_reply/' + reply.id " class="btn btn-sm btn-outline-secondary">Edit</router-link>
+            <button class="btn btn-sm btn-outline-danger" @click="deleteReply(reply.id)">Delete</button>
+            </div>
+
           </div>
         </div>
-    <!-- 답변 등록 -->
+    <!-- Replies -->
         <error_component :error="error" />
         <form @submit.prevent="addReply" class="my-3">
           <div class="mb-3">
-            <textarea rows="10" v-model="content" class="form-control" />
+            <textarea rows="10" v-model="content" class="form-control"></textarea>
           </div>
-          <input type="submit" value="답변등록" class="btn btn-primary" />
+          <input type="submit" value="Reply" class="btn btn-primary" />
         </form>
       </div>
 </template>
@@ -84,7 +108,7 @@ export default{
   },
   data() {
     return{
-      post: {},
+      post: { voter: {} },
       content: "",
       error: { detail:[] },
     }
@@ -93,8 +117,20 @@ export default{
     this.getPost()
   },
   methods: {
+    likePost(post_id){
+      let params = {post_id: post_id};
+      fastapi("post", `/api/post/like/`, params, () => {
+        this.getPost();
+      });
+    },
+    likeReply(reply_id){
+      let params = {id: reply_id};
+      fastapi("post", `/api/reply/like/`, params, () => {
+        this.getPost();
+      });
+    },
     formatDate(dt){
-      return moment(dt).startOf("hour").fromNow();
+      return moment(dt).startOf("minute").fromNow();
     },
     getPost(){
       fastapi("get", `/api/post/detail/${this.post_id}`, {}, (json) => {
@@ -121,6 +157,36 @@ export default{
       // }).catch((error) => {
       //   console.log("Error:", error);
       // })
+    },
+    deletePost(post_id){
+      if(confirm("Are you sure you would like to delete this post? This change cannot be undone.")){
+        let url = "/api/post/delete";
+        let params = {
+          post_id: post_id,
+        };
+        fastapi("delete", url, params, () => {
+          this.$router.push("/");
+        },
+        (err) => {
+          this.error = err;
+        },
+      );
+      }
+    },
+    deleteReply(reply_id){
+      if(confirm("Are you sure you would like to delete this reply? This change cannot be undone.")){
+        let url = "/api/reply/delete";
+        let params = {
+          id: reply_id,
+        };
+        fastapi("delete", url, params, () => {
+          this.getPost();
+        },
+        (err) => {
+          this.error = err;
+        },
+      );
+      }
     }
   },
 };

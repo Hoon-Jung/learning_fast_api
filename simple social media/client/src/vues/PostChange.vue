@@ -1,8 +1,8 @@
 <template>
     <div class="container my-3">
-      <h4>Create a Post</h4>
+      <h4>Edit Post</h4>
       <error_component :error="error" />
-      <form @submit.prevent="createPost">
+      <form @submit.prevent="updatePost">
         <div class="mb-3">
           <label for="subject" class="form-label">Title</label>
           <input
@@ -23,7 +23,7 @@
             required
           ></textarea>
         </div>
-        <button type="submit" class="btn btn-primary">Create Post</button>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
       </form>
     </div>
   </template>
@@ -43,21 +43,28 @@ export default{
   },
   data() {
     return{
-      post: {},
+      subject: "",
+      content: "",
       error: { detail:[] },
     }
   },
-  created() {
+  mounted() {
+    let url = "/api/post/detail/" + this.post_id;
+    fastapi("get", url, {}, (json) => {
+        this.subject = json.subject;
+        this.content = json.content;
+    });
   },
   methods: {
-    createPost(){
+    updatePost(){
       let params={
         subject: this.subject,
         content: this.content,
+        post_id: this.post_id,
       }
 
-      fastapi("post", `/api/post/add`, params, () => {
-        this.$router.push("/");
+      fastapi("put", `/api/post/update`, params, () => {
+        this.$router.push("/body/" + this.post_id);
       },
       (err) => {
         this.error = err; 

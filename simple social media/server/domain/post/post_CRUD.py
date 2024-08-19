@@ -1,16 +1,30 @@
+<<<<<<< HEAD
 from models import Post, User
+=======
+from models import Post, User, Replies
+>>>>>>> e3febfa (added a couple features)
 from .post_schema import MakePost, PostUpdate
 from sqlalchemy.orm import Session
 from datetime import datetime
 
 
-def get_all_posts(db: Session, skip: int = 0, page_size: int = 10):
-    posts = db.query(Post).order_by(Post.created_at.desc())
+def get_all_posts(db: Session, skip: int = 0, page_size: int = 10, keyword: str = ''):
+    posts = db.query(Post)
+    if keyword:
+        search = f"%{keyword}%"
+        posts = db.query(Post).outerjoin(Replies).filter(Post.subject.ilike(search) | Post.content.ilike(search) | Replies.content.ilike(search))
+        #filter
 
+<<<<<<< HEAD
     total = posts.count()
     current_posts = posts.offset(skip).limit(page_size).all()
+=======
+    total = posts.distinct().count()
+    post_list = posts.offset(skip).limit(page_size).distinct().all()
 
-    return total, current_posts
+>>>>>>> e3febfa (added a couple features)
+
+    return total, post_list
 
 def get_specific_post(db: Session, id):
     return db.query(Post).get(id)

@@ -40,10 +40,22 @@
           </div>
         </div>
 
+<<<<<<< HEAD
         <div class="my-3">
           <button class="btn btn-sm btn-outline-secondary" @click="likePost(post.id)">Likes 
             <span class="badge rounded-pill bg-success">{{ post.voter.length }}</span>
           </button>
+=======
+        <div class="my-3" v-if="postVoted">
+          <button class="btn btn-success active" data-bs-toggle="button" aria-pressed="true" @click="likePost(post.id)">
+            <solid_thumbs_up class="icon"></solid_thumbs_up> {{ post.voter.length }}
+           </button>
+        </div>
+        <div class="my-3" v-else>
+          <button class="btn btn-success" data-bs-toggle="button" @click="likePost(post.id)">
+            <outline_thumbs_up class="icon"></outline_thumbs_up> {{ post.voter.length }}
+           </button>
+>>>>>>> e3febfa (added a couple features)
         </div>
 
         <div class="my-3" v-if="post.user && $store.state.username === post.user.username">
@@ -67,9 +79,20 @@
               </div>
             </div>
 
+<<<<<<< HEAD
             <div class="my-3">
               <button class="btn btn-sm btn-outline-secondary" @click="likeReply(reply.id)">Likes 
                 <span class="badge rounded-pill bg-success">{{ reply.voter.length }}</span>
+=======
+            <div class="my-3" v-if="replyVoted(reply)">
+              <button class="btn btn-success active" data-bs-toggle="button" aria-pressed="true" @click="likeReply(reply.id)">
+                <solid_thumbs_up class="icon"></solid_thumbs_up> {{ reply.voter.length }}
+              </button>
+            </div>
+            <div class="my-3" v-else>
+              <button class="btn btn-success" data-bs-toggle="button" @click="likeReply(reply.id)">
+              <outline_thumbs_up class="icon"></outline_thumbs_up> {{ reply.voter.length }}
+>>>>>>> e3febfa (added a couple features)
               </button>
             </div>
 
@@ -94,17 +117,29 @@
 
 <script>
 import moment from "moment";
+// import marked from "marked";
 import fastapi from '../../lib/api';
 import error_component from "../components/error_component.vue";
+import {HandThumbUpIcon as OutlineThumbsUp} from "@heroicons/vue/24/outline";
+import {HandThumbUpIcon as SolidThumbsUp} from "@heroicons/vue/24/solid";
+
 export default{
   components: {
     error_component,
+    outline_thumbs_up: OutlineThumbsUp,
+    solid_thumbs_up: SolidThumbsUp,
   },
   props: {
     post_id: {
       type: String,
       required: true
     }
+  },
+  computed: {
+    postVoted(){
+      const username = this.$store.state.username;
+      return this.post.voter.some((user) => user.username === username);
+    },
   },
   data() {
     return{
@@ -117,6 +152,13 @@ export default{
     this.getPost()
   },
   methods: {
+<<<<<<< HEAD
+=======
+    replyVoted(rep){
+      const username = this.$store.state.username;
+      return rep.voter.some((user) => user.username === username);
+    },
+>>>>>>> e3febfa (added a couple features)
     likePost(post_id){
       let params = {post_id: post_id};
       fastapi("post", `/api/post/like/`, params, () => {
@@ -191,3 +233,11 @@ export default{
   },
 };
 </script>
+
+
+<style>
+.icon{
+  width: 18px;
+  height: 18px;
+}
+</style>

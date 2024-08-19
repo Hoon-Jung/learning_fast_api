@@ -1,7 +1,12 @@
 <template>
     <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
       <div class="container-fluid">
-        <router-link to="/" class="navbar-brand" @click="setPage(0)">MyBlog</router-link>
+        <router-link to="/"   class="navbar-brand" @click="
+          $store.commit('setPage', 0);
+          $store.commit('setKeyword', '');
+          ">
+          MyBlog
+        </router-link>
         <button
           class="navbar-toggler"
           type="button"
@@ -45,12 +50,17 @@ export default {
     },
     get_username(){
       return this.$store.state.username;
+<<<<<<< HEAD
     }
   },
   methods: {
     setPage(page) {
       this.$store.dispatch('setPage', page);
+=======
+>>>>>>> e3febfa (added a couple features)
     }
+  },
+  methods: {
   }
 }
 </script>

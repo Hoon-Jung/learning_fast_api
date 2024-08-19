@@ -1,5 +1,27 @@
 <template>
   <div class="container my-3">
+    <div class="row my-3">
+      <div class="col-6">
+        <div class="d-flex justify-content-start" v-if="is_logged_in">
+          <router-link to="/post-add" class="btn btn-primary">Post</router-link>
+        </div>
+        <div class="d-flex justify-content-start" v-else>
+          <div class="btn btn-primary">Log in to Post</div>
+        </div>
+      </div>
+
+      <div class="col-6">
+        <div class="input-group">
+          <input type="text" class="form-control" v-model="kw" />
+          <button class="btn btn-outline-secondary" @click="
+          $store.commit('setPage', 0);
+          $store.commit('setKeyword', kw)
+          ">
+          Search
+          </button>
+        </div>
+      </div>
+    </div>
     <table class="table">
       <thead>
         <tr class="table-dark">
@@ -30,10 +52,10 @@
 
     <ul class="pagination justify-content-center">
       <li class="page-item" :class="{ disabled: page <= 0 }">
-        <button class="page-link" @click="getPosts(0)">First</button>
+        <button class="page-link" @click="$store.commit('setPage', 0);">First</button>
       </li>
       <li class="page-item" :class="{ disabled: page <= 0 }">
-        <button class="page-link" @click="getPosts(page - 1)">Back</button>
+        <button class="page-link" @click="$store.commit('setPage', page-1);">Back</button>
       </li>
       <template
         v-for="(_, loop_page) in Array.from({ length: totalPage })"
@@ -44,19 +66,20 @@
           v-if="loop_page >= page - 5 && loop_page <= page + 5"
           :class="{ active: loop_page === page }"
         >
-          <button class="page-link" @click="getPosts(loop_page)">
+          <button class="page-link" @click="$store.commit('setPage', loop_page);">
             {{ loop_page + 1 }}
           </button>
         </li>
       </template>
       <li class="page-item" :class="{ disabled: page >= totalPage - 1 }">
-        <button class="page-link" @click="getPosts(page + 1)">Next</button>
+        <button class="page-link" @click="$store.commit('setPage', page+1);">Next</button>
       </li>
       <li class="page-item" :class="{ disabled: page >= totalPage - 1 }">
-        <button class="page-link" @click="getPosts(totalPage-1)">Last</button>
+        <button class="page-link" @click="$store.commit('setPage', totalPage-1);">Last</button>
       </li>
     </ul>
     
+<<<<<<< HEAD
     <div class="d-flex justify-content-start" v-if="is_logged_in">
       <router-link to="/post-add" class="btn btn-primary"
         >Post</router-link>
@@ -64,6 +87,8 @@
     <div class="d-flex justify-content-start" v-else>
       <div class="btn btn-primary">Log in to Post</div>
     </div>
+=======
+>>>>>>> e3febfa (added a couple features)
   </div>
 </template>
 
@@ -87,6 +112,7 @@ export default{
         allposts: [],
         p_size: 10,
         total: 0,
+        kw: "",
     }
   },
   computed: {
@@ -99,6 +125,20 @@ export default{
     is_logged_in(){
       return this.$store.state.is_login;
     },
+<<<<<<< HEAD
+=======
+    keyword() {
+      return this.$store.state.keyword;
+    },
+  },
+  watch: {
+    page() {
+      this.getPosts();
+    },
+    keyword() {
+      this.getPosts();
+    }
+>>>>>>> e3febfa (added a couple features)
   },
   created() {
     this.getPosts(this.$store.state.page);
@@ -107,15 +147,16 @@ export default{
     formatDate(dt){
       return moment(dt).startOf("hour").fromNow();
     },
-    getPosts(p) {
+    getPosts() {
       let params = {
-        page: p,
+        page: this.page,
         page_size: this.p_size,
+        keyword: this.keyword,
       }
       fastapi("get", "/api/post/list", params, (json) => {
         this.allposts = json.posts;
         this.total = json.total;
-        this.$store.dispatch("setPage", p);
+        this.kw = this.keyword;
       });
     },
   },

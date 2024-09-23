@@ -61,7 +61,7 @@
         <h5 class="border-bottom my-3 py-2">
           {{ post.replies?.length }} replies
         </h5>
-        <div class="card my-3" v-for="reply in post.replies" :key="reply.id">
+        <div class="card my-3" v-for="reply in replies" :key="reply.id">
           <div class="card-body">
             <div class="card-text" style="white-space: pre-line">
               {{ reply.content }}
@@ -86,6 +86,34 @@
           </div>
         </div>
     <!-- Replies -->
+    <ul class="pagination justify-content-center">
+      <li class="page-item" :class="{ disabled: page <= 0 }">
+        <button class="page-link" @click="$store.commit('setCommentPage', 0);">First</button>
+      </li>
+      <li class="page-item" :class="{ disabled: page <= 0 }">
+        <button class="page-link" @click="$store.commit('setCommentPage', page-1);">Back</button>
+      </li>
+      <template
+        v-for="(_, loop_page) in Array.from({ length: totalPage })"
+        :key="loop_page"
+      >
+        <li
+          class="page-item"
+          v-if="loop_page >= page - 5 && loop_page <= page + 5"
+          :class="{ active: loop_page === page }"
+        >
+          <button class="page-link" @click="$store.commit('setCommentPage', loop_page);">
+            {{ loop_page + 1 }}
+          </button>
+        </li>
+      </template>
+      <li class="page-item" :class="{ disabled: page >= totalPage - 1 }">
+        <button class="page-link" @click="$store.commit('setCommentPage', page+1);">Next</button>
+      </li>
+      <li class="page-item" :class="{ disabled: page >= totalPage - 1 }">
+        <button class="page-link" @click="$store.commit('setCommentPage', totalPage-1);">Last</button>
+      </li>
+    </ul>
         <error_component :error="error" />
         <form @submit.prevent="addReply" class="my-3">
           <div class="mb-3">
@@ -115,12 +143,18 @@ export default{
     post_id: {
       type: String,
       required: true
-    }
+    },
   },
   computed: {
     postVoted(){
       const username = this.$store.state.username;
       return this.post.voter.some((user) => user.username === username);
+    },
+    page(){
+      return this.$store.state.commentPage;
+    },
+    totalPage() {
+      return Math.ceil(this.total / this.p_size)
     },
   },
   data() {
@@ -128,10 +162,14 @@ export default{
       post: { voter: {} },
       content: "",
       error: { detail:[] },
+      p_size: 10,
+      total: 0,
+      replies: [],
     }
   },
   created() {
-    this.getPost()
+    this.getPost();
+    this.getReplies();
   },
   methods: {
     replyVoted(rep){
@@ -156,6 +194,18 @@ export default{
     getPost(){
       fastapi("get", `/api/post/detail/${this.post_id}`, {}, (json) => {
         this.post = json;
+      });
+    },
+    getReplies() {
+      let params = {
+        page: this.page,
+        page_size: this.p_size,
+        post_id: this.post_id
+      }
+      fastapi("get", "/api/reply/list", params, (json) => {
+        console.log(json);
+        this.replies = json.reply_list;
+        this.total = json.total;
       });
     },
     addReply(){

@@ -44,6 +44,7 @@ class Replies(Base):
     user = relationship("User", backref="replied_user")
     modified_at = Column(DateTime, nullable=True)
     voter = relationship("User", secondary=reply_voter, backref="reply_voters")
+    voter_count = Column(Integer, default=0)
 
 
 class User(Base):

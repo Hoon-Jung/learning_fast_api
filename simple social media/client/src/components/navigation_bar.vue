@@ -50,14 +50,11 @@ export default {
     },
     get_username(){
       return this.$store.state.username;
-<<<<<<< HEAD
     }
   },
   methods: {
     setPage(page) {
       this.$store.dispatch('setPage', page);
-=======
->>>>>>> e3febfa (added a couple features)
     }
   },
   methods: {

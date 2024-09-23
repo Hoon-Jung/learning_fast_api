@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-from models import Post, User
-=======
 from models import Post, User, Replies
->>>>>>> e3febfa (added a couple features)
 from .post_schema import MakePost, PostUpdate
 from sqlalchemy.orm import Session
 from datetime import datetime
@@ -15,14 +11,9 @@ def get_all_posts(db: Session, skip: int = 0, page_size: int = 10, keyword: str 
         posts = db.query(Post).outerjoin(Replies).filter(Post.subject.ilike(search) | Post.content.ilike(search) | Replies.content.ilike(search))
         #filter
 
-<<<<<<< HEAD
-    total = posts.count()
-    current_posts = posts.offset(skip).limit(page_size).all()
-=======
     total = posts.distinct().count()
     post_list = posts.offset(skip).limit(page_size).distinct().all()
 
->>>>>>> e3febfa (added a couple features)
 
     return total, post_list
 

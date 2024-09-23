@@ -79,7 +79,6 @@
       </li>
     </ul>
     
-<<<<<<< HEAD
     <div class="d-flex justify-content-start" v-if="is_logged_in">
       <router-link to="/post-add" class="btn btn-primary"
         >Post</router-link>
@@ -87,8 +86,6 @@
     <div class="d-flex justify-content-start" v-else>
       <div class="btn btn-primary">Log in to Post</div>
     </div>
-=======
->>>>>>> e3febfa (added a couple features)
   </div>
 </template>
 
@@ -125,8 +122,6 @@ export default{
     is_logged_in(){
       return this.$store.state.is_login;
     },
-<<<<<<< HEAD
-=======
     keyword() {
       return this.$store.state.keyword;
     },
@@ -138,7 +133,6 @@ export default{
     keyword() {
       this.getPosts();
     }
->>>>>>> e3febfa (added a couple features)
   },
   created() {
     this.getPosts(this.$store.state.page);

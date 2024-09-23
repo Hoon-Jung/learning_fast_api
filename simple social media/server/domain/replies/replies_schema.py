@@ -1,6 +1,7 @@
 from pydantic import BaseModel, field_validator
 import datetime
 from domain.user.user_schema import UserShow
+from models import Replies
 
 class MakeReply(BaseModel):
     content: str
@@ -29,3 +30,8 @@ class replyDelete(BaseModel):
 
 class likeReply(BaseModel):
     id: int
+
+class replyList(BaseModel):
+    total: int
+    reply_list: list[GetReply] = []
+

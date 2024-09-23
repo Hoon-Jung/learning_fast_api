@@ -19,6 +19,15 @@ def get_reply(db: Session, id):
     return db.query(Replies).get(id)
 
 
+def get_all_replies(db: Session, post_id: int, skip: int = 0, page_size: int = 10):
+    replies = db.query(Replies).filter(Replies.post_id == post_id).order_by(Replies.created_at)
+    total = replies.distinct().count()
+    _replies = replies.offset(skip).limit(page_size).distinct().all()
+
+
+    return total, _replies
+
+
 def reply_update(db: Session, db_reply: Replies, replyupdate: replyUpdate):
     db_reply.content = replyupdate.content
     db_reply.modified_at = datetime.now()

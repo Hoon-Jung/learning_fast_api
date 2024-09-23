@@ -40,12 +40,6 @@
           </div>
         </div>
 
-<<<<<<< HEAD
-        <div class="my-3">
-          <button class="btn btn-sm btn-outline-secondary" @click="likePost(post.id)">Likes 
-            <span class="badge rounded-pill bg-success">{{ post.voter.length }}</span>
-          </button>
-=======
         <div class="my-3" v-if="postVoted">
           <button class="btn btn-success active" data-bs-toggle="button" aria-pressed="true" @click="likePost(post.id)">
             <solid_thumbs_up class="icon"></solid_thumbs_up> {{ post.voter.length }}
@@ -55,7 +49,6 @@
           <button class="btn btn-success" data-bs-toggle="button" @click="likePost(post.id)">
             <outline_thumbs_up class="icon"></outline_thumbs_up> {{ post.voter.length }}
            </button>
->>>>>>> e3febfa (added a couple features)
         </div>
 
         <div class="my-3" v-if="post.user && $store.state.username === post.user.username">
@@ -79,20 +72,9 @@
               </div>
             </div>
 
-<<<<<<< HEAD
             <div class="my-3">
               <button class="btn btn-sm btn-outline-secondary" @click="likeReply(reply.id)">Likes 
                 <span class="badge rounded-pill bg-success">{{ reply.voter.length }}</span>
-=======
-            <div class="my-3" v-if="replyVoted(reply)">
-              <button class="btn btn-success active" data-bs-toggle="button" aria-pressed="true" @click="likeReply(reply.id)">
-                <solid_thumbs_up class="icon"></solid_thumbs_up> {{ reply.voter.length }}
-              </button>
-            </div>
-            <div class="my-3" v-else>
-              <button class="btn btn-success" data-bs-toggle="button" @click="likeReply(reply.id)">
-              <outline_thumbs_up class="icon"></outline_thumbs_up> {{ reply.voter.length }}
->>>>>>> e3febfa (added a couple features)
               </button>
             </div>
 
@@ -152,13 +134,10 @@ export default{
     this.getPost()
   },
   methods: {
-<<<<<<< HEAD
-=======
     replyVoted(rep){
       const username = this.$store.state.username;
       return rep.voter.some((user) => user.username === username);
     },
->>>>>>> e3febfa (added a couple features)
     likePost(post_id){
       let params = {post_id: post_id};
       fastapi("post", `/api/post/like/`, params, () => {

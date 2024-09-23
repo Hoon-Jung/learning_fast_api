@@ -58,3 +58,15 @@ def reply_like(_reply: replies_schema.likeReply, db: Session = Depends(get_db), 
         replies_CRUD.unlike_reply(db, db_reply=reply, db_user=curr_user)
     else:
         replies_CRUD.like_reply(db, db_reply=reply, db_user=curr_user)
+
+
+
+@router.get("/list", response_model=replies_schema.replyList)
+def reply_list(post_id, db: Session = Depends(get_db), page: int = 0, page_size: int = 10):
+    print("working1")
+    post = post_CRUD.get_specific_post(db, id=post_id)
+    print(post)
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    total, replies = replies_CRUD.get_all_replies(db, skip=page*page_size, page_size=page_size)
+    return {"total": total, "reply_list": replies}

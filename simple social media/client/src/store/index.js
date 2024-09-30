@@ -12,6 +12,8 @@ const store = createStore({
         store: "",
         keyword: "",
         commentPage: 0,
+        sortby: "voter_count",
+        desc: true,
     },
     mutations: {
         setPage: (state, payload) => state.page = payload ,
@@ -20,6 +22,8 @@ const store = createStore({
         setUsername: (state, payload) => state.username = payload,
         setIsLogin: (state, payload) => state.is_login = payload,
         setKeyword: (state, payload) => state.keyword = payload,
+        setSortBy: (state, payload) => state.sortby = payload,
+        setDesc: (state, payload) => state.desc = payload,
     },
     actions: {
         setPage: ({commit}, payload) => commit('setPage', payload),
@@ -28,6 +32,8 @@ const store = createStore({
         setUsername: ({commit}, payload) => commit('setUsername', payload),
         setIsLogin: ({commit}, payload) => commit('setIsLogin', payload),
         setKeyword: ({commit}, payload) => commit("setKeyword", payload),
+        setSortBy: ({commit}, payload) => commit("setSortBy", payload),
+        setDesc: ({commit}, payload) => commit("setDesc", payload),
     },
 })
 

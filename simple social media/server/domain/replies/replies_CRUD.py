@@ -19,8 +19,14 @@ def get_reply(db: Session, id):
     return db.query(Replies).get(id)
 
 
-def get_all_replies(db: Session, post_id: int, skip: int = 0, page_size: int = 10):
-    replies = db.query(Replies).filter(Replies.post_id == post_id).order_by(Replies.created_at)
+def get_all_replies(db: Session, post_id: int, skip: int = 0, page_size: int = 10, sort_by: str = "voter_count", desc: bool = True):
+    sort_column = getattr(Replies, sort_by)
+    if desc:
+        sort_column = sort_column.desc()
+    else:
+        sort_column = sort_column.asc()
+
+    replies = db.query(Replies).filter(Replies.post_id == post_id).order_by(sort_column)
     total = replies.distinct().count()
     _replies = replies.offset(skip).limit(page_size).distinct().all()
 
@@ -42,9 +48,11 @@ def delete_reply(db: Session, delete: Replies):
 
 def like_reply(db: Session, db_reply: Replies, db_user: User):
     db_reply.voter.append(db_user)
+    db_reply.voter_count = db_reply.voter_count + 1
     db.commit()
 
 
 def unlike_reply(db: Session, db_reply: Replies, db_user: User):
     db_reply.voter.remove(db_user)
+    db_reply.voter_count = db_reply.voter_count - 1
     db.commit()

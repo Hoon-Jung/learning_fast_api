@@ -20,6 +20,7 @@ class GetReply(BaseModel):
     post_id: int
     created_at: datetime.datetime
     voter: list[UserShow] = []
+    voter_count: int
 
 
 class replyUpdate(MakeReply):

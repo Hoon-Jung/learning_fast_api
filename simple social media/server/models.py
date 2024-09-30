@@ -29,6 +29,9 @@ class Post(Base):
     modified_at = Column(DateTime, nullable=True)
     voter = relationship("User", secondary=post_voter, backref="post_voters")
 
+    category_id = Column(Integer, ForeignKey("category.id"), nullable=True)
+    category = relationship("Category", backref="posts")
+
 
 
 
@@ -54,3 +57,10 @@ class User(Base):
     username = Column(String(50), unique=True, nullable=False)
     password = Column(String(60), nullable=False)
     email = Column(String(254), unique=True, nullable=False)
+
+
+class Category(Base):
+    __tablename__ = "category"
+
+    id = Column(Integer, primary_key=True)
+    subject = Column(String(254), nullable=False)

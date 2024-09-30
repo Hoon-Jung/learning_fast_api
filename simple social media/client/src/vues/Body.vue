@@ -58,6 +58,22 @@
 
       </div>
     </div>
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+        Filter by
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+        <li><a class="dropdown-item" href="#" @click="setSort('voter_count', true)">Most Likes</a></li>
+        <li><a class="dropdown-item" href="#" @click="setSort('voter_count', false)">Least Likes</a></li>
+        <li><a class="dropdown-item" href="#" @click="setSort('created_at', false)" >Oldest</a></li>
+        <li><a class="dropdown-item" href="#" @click="setSort('created_at', true)" >Newest</a></li>
+      </ul>
+    </div>
+        
+
+
+
+
         <h5 class="border-bottom my-3 py-2">
           {{ post.replies?.length }} replies
         </h5>
@@ -71,16 +87,19 @@
                 @{{ reply.user.username }} | {{ formatDate(reply.created_at) }}
               </div>
             </div>
-
-            <div class="my-3">
-              <button class="btn btn-sm btn-outline-secondary" @click="likeReply(reply.id)">Likes 
+            <div class="my-3" v-if="reply.user && reply.voter.some(voter => voter.username === $store.state.username)">
+              <button class="btn btn-success active" @click="likeReply(reply.id)">Likes 
                 <span class="badge rounded-pill bg-success">{{ reply.voter.length }}</span>
               </button>
             </div>
-
+            <div class="my-3" v-else>
+              <button class="btn btn-success" @click="likeReply(reply.id)">Likes 
+                <span class="badge rounded-pill bg-success">{{ reply.voter.length }}</span>
+              </button>
+            </div>
             <div class="my-3" v-if="reply.user && $store.state.username === reply.user.username">
-            <router-link :to=" '/update_reply/' + reply.id " class="btn btn-sm btn-outline-secondary">Edit</router-link>
-            <button class="btn btn-sm btn-outline-danger" @click="deleteReply(reply.id)">Delete</button>
+              <router-link :to=" '/update_reply/' + reply.id " class="btn btn-sm btn-outline-secondary">Edit</router-link>
+              <button class="btn btn-sm btn-outline-danger" @click="deleteReply(reply.id)">Delete</button>
             </div>
 
           </div>
@@ -125,6 +144,7 @@
 </template>
 
 
+
 <script>
 import moment from "moment";
 // import marked from "marked";
@@ -145,7 +165,24 @@ export default{
       required: true
     },
   },
+  watch: {
+    page(){
+      this.getReplies();
+    },
+    sort_by(){
+      this.getReplies();
+    },
+    desc(){
+      this.getReplies();
+    },
+  },
   computed: {
+    sort_by(){
+      return this.$store.state.sortby;
+    },
+    desc(){
+      return this.$store.state.desc;
+    },
     postVoted(){
       const username = this.$store.state.username;
       return this.post.voter.some((user) => user.username === username);
@@ -176,6 +213,10 @@ export default{
       const username = this.$store.state.username;
       return rep.voter.some((user) => user.username === username);
     },
+    setSort(sortby, desc){
+      this.$store.commit('setSortBy', sortby);
+      this.$store.commit('setDesc', desc);
+    },
     likePost(post_id){
       let params = {post_id: post_id};
       fastapi("post", `/api/post/like/`, params, () => {
@@ -186,6 +227,7 @@ export default{
       let params = {id: reply_id};
       fastapi("post", `/api/reply/like/`, params, () => {
         this.getPost();
+        this.getReplies();
       });
     },
     formatDate(dt){
@@ -200,10 +242,11 @@ export default{
       let params = {
         page: this.page,
         page_size: this.p_size,
-        post_id: this.post_id
+        post_id: this.post_id,
+        sort_by: this.sort_by,
+        desc: this.desc,
       }
       fastapi("get", "/api/reply/list", params, (json) => {
-        console.log(json);
         this.replies = json.reply_list;
         this.total = json.total;
       });

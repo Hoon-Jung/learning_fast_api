@@ -40,12 +40,12 @@ def update_reply(change_reply: replies_schema.replyUpdate, db: Session = Depends
 
 
 @router.get("/list", response_model=replies_schema.replyList)
-def reply_list(post_id, db: Session = Depends(get_db), page: int = 0, page_size: int = 10):
+def reply_list(post_id, db: Session = Depends(get_db), page: int = 0, page_size: int = 10, sort_by: str = "voter_count", desc: bool = True):
     post = post_CRUD.get_specific_post(db, id=post_id)
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
     print(page_size)
-    total, replies = replies_CRUD.get_all_replies(db, skip=page*page_size, page_size=page_size, post_id=post_id)
+    total, replies = replies_CRUD.get_all_replies(db, skip=page*page_size, page_size=page_size, post_id=post_id, desc=desc, sort_by=sort_by)
     return {"total": total, "reply_list": replies}
 
 

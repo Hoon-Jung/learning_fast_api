@@ -3,7 +3,7 @@
     <div class="row my-3">
       <div class="col-6">
         <div class="d-flex justify-content-start" v-if="is_logged_in">
-          <router-link to="/post-add" class="btn btn-primary">Post</router-link>
+          <router-link :to="{path: '/post-add', query: { category_id: category_id }}" class="btn btn-primary">Post</router-link>
         </div>
         <div class="d-flex justify-content-start" v-else>
           <div class="btn btn-primary">Log in to Post</div>
@@ -112,6 +112,12 @@ export default{
         kw: "",
     }
   },
+  props: {
+    category_id:{
+      type: String,
+      required: true,
+    }
+  },
   computed: {
     page(){
       return this.$store.state.page;
@@ -132,6 +138,9 @@ export default{
     },
     keyword() {
       this.getPosts();
+    },
+    category_id(){
+      this.getPosts();
     }
   },
   created() {
@@ -146,6 +155,7 @@ export default{
         page: this.page,
         page_size: this.p_size,
         keyword: this.keyword,
+        category_id: this.category_id,
       }
       fastapi("get", "/api/post/list", params, (json) => {
         this.allposts = json.posts;

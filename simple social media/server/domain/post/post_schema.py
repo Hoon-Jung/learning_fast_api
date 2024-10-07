@@ -2,6 +2,7 @@ from pydantic import BaseModel, field_validator
 import datetime
 from domain.replies.replies_schema import GetReply
 from domain.user.user_schema import UserShow
+from domain.category.category_schema import Category
 
 class Post(BaseModel):
     id: int
@@ -12,11 +13,13 @@ class Post(BaseModel):
     modified_at: datetime.datetime | None = None
     user: UserShow | None
     voter: list[UserShow] = []
+    category: Category
 
 
 class MakePost(BaseModel):
     subject: str
     content: str
+    category_id: int
 
     @field_validator("subject", "content")
     def not_empty(cls, v):

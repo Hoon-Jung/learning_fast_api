@@ -11,8 +11,13 @@ import ReplyChange from "@/vues/ReplyChange.vue";
 const routes = [
   {
     path: "/",
+    redirect: "list/0",
+  },
+  {
+    path: "/list/:category_id",
     name: "Home",
     component: Home,
+    props: true,
   },
   {
     path: "/body/:post_id",

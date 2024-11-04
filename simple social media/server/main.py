@@ -5,6 +5,9 @@ from domain.post import post_router
 from domain.replies import replies_router
 from domain.user import user_router
 
+from starlette.responses import FileResponse
+from starlette.staticfiles import StaticFiles
+
 
 app = FastAPI()
 
@@ -29,3 +32,8 @@ app.add_middleware(
 app.include_router(post_router.router)
 app.include_router(replies_router.router)
 app.include_router(user_router.router)
+app.mount("/assets", StaticFiles(directory="../client/dist/assets"))
+
+@app.get("/")
+def index():
+    return FileResponse("../client/dist/index.html")

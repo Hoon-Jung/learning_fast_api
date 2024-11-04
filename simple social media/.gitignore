@@ -2,3 +2,4 @@ migrations
 alembic.ini
 __pycache__
 tempqueries.py
+server_ip
